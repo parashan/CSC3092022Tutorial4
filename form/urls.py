@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import BasicFormView1, BasicFormView2, form_view, index_view, sample_json, sample_json2, register, auth, signin, logout_view
+from .views import BasicFormView1, BasicFormView2, form_view, index_view, sample_json, sample_json2, register, auth, signin, logout_view, chat
 
 app_name = 'accounts'
 
@@ -16,5 +16,6 @@ urlpatterns = [
     path('signin', signin, name='login'),
     # Authenticated endpoints
     path('auth', auth, name='auth'),
-    path('logout', logout_view, name='logout')
+    path('logout', logout_view, name='logout'),
+    path('chat', chat, name='chat')
 ]

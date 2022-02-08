@@ -9,19 +9,22 @@ def length_check(length):
     
 class EnterForm(forms.Form):
     user_name = forms.CharField(label='Username', max_length=100)
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(), validators = [length_check(10)])
+    password = forms.CharField(label='Password', widget=forms.PasswordInput(), validators = [])
 
 class DateInput(forms.DateInput):
     input_type = 'date'
 
 class LoginForm(forms.Form):
     user_name = forms.CharField(label='Username', max_length=100)
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(), validators = [length_check(10)])
+    password = forms.CharField(label='Password', widget=forms.PasswordInput(), validators = [])
 
 class RegisterForm(forms.Form):
     user_name = forms.CharField(label='Username', max_length=100)
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(), validators = [length_check(10)])
+    password = forms.CharField(label='Password', widget=forms.PasswordInput(), validators = [])
     birth_date = forms.DateField(label="Birth Date", widget=DateInput())
     email = forms.EmailField(label='Email', widget=forms.EmailInput())
+
+class ChatForm(forms.Form):
+    comment=forms.CharField(widget=forms.Textarea, max_length=1000)
 
    

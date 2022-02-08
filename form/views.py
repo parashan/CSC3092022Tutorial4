@@ -1,12 +1,15 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template import loader
-from .forms import EnterForm, RegisterForm, LoginForm
+from .forms import EnterForm, RegisterForm, LoginForm, ChatForm
 from django.views.generic.edit import FormView
 from django.views import View
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
+from .models import Chat
+from datetime import date
 import json
 # from django.forms import EnterForm
 # Build a form using Django 3 different ways
@@ -92,9 +95,7 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect('signin')
 
-@login_required
-def auth(request):
-    return render(request, 'forms/auth.html', {'user': request.user})
+
 
 def signin(request):
     if request.method == 'POST':
@@ -130,6 +131,8 @@ def register(request):
                 save_user.save()
                 
                 return HttpResponseRedirect('signin')
+            except IntegrityError:
+                form.add_error(None, "This user already exists")
             except Exception as error:
                 print("This error is", error)
                 form.add_error(None, "Generic Server Error")            
@@ -138,7 +141,30 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'forms/register.html', {'form': form})
-        
+
+@login_required
+def auth(request):
+    return render(request, 'forms/auth.html', {'user': request.user})
+
+@login_required
+def chat(request):
+    form = ChatForm()
+    if request.method == 'POST':
+        form=ChatForm(request.POST)
+        if form.is_valid():
+            comment = form.cleaned_data['comment']
+            if comment:
+                try:
+                    user = request.user
+                    chat = Chat(user=user, comment=comment, date=date.today())
+                    chat.save()
+                    form=ChatForm()
+                except Exception as error:
+                    print("This error is", error)
+                    form.add_error(None, "Generic Server Error")     
+    
+    chats = Chat.objects.all()
+    return render(request, 'forms/chat.html', {'chats': chats, 'form': form})
     
 
 
